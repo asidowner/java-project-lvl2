@@ -4,10 +4,10 @@ install: # установить зависимости
 	./gradlew clean install
 
 run-dist:
-	./build/install/app/bin/app $(f) $(a) $(b)
+	./build/install/java-project-lvl2/bin/java-project-lvl2 $(f) $(a) $(b)
 
 help:
-	./build/install/app/bin/app -h
+	./build/install/java-project-lvl2/bin/java-project-lvl2 -h
 
 check-updates:
 	./gradlew dependencyUpdates
