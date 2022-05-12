@@ -1,5 +1,6 @@
 package hexlet.code;
 
+import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -30,6 +31,14 @@ public class App implements Callable<Integer> {
         try {
             String result = Differ.generate(filepath1, filepath2, format);
             System.out.println(result);
+        } catch (MismatchedInputException e) {
+            System.out.printf("""
+                    Oops, something went wrong. Try again with different params.\s
+                    Problem in: %s
+                    StackTrace:
+                    """, e.getMessage());
+            e.printStackTrace();
+            return 1;
         } catch (IOException e) {
             System.out.printf("""
                     Oops, something went wrong. Try again with different params.\s

@@ -21,6 +21,9 @@ lint-test:
 build:
 	./gradlew clean build
 
+test:
+	./gradlew test
+
 clean:
 	./gradlew clean
 
