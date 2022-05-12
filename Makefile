@@ -1,3 +1,5 @@
+.DEFAULT_GOAL := build
+
 install: # установить зависимости
 	./gradlew clean install
 

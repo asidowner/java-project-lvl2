@@ -1,2 +1,3 @@
+include('src')
 rootProject.name = 'app'
 

@@ -1,8 +1,10 @@
 name: app-differ
-on: [push]
+on: [ push ]
+
 jobs:
-  Explore-GitHub-Actions:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 17
@@ -10,7 +12,9 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
-      - name: Build with Gradle
-        uses: gradle/gradle-build-action@v2
+      - name: Setup Gradle
+      - uses: gradle/gradle-build-action@v2
         with:
-          arguments: build
+          gradle-version: release-candidate
+      - name: Build with Gradle
+        run: make build
