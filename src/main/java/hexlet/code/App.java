@@ -28,31 +28,28 @@ public class App implements Callable<Integer> {
      */
     @Override
     public Integer call() {
+        String result;
         try {
-            String result = Differ.generate(filepath1, filepath2, format);
-            System.out.println(result);
+            result = Differ.generate(filepath1, filepath2, format);
         } catch (MismatchedInputException e) {
             System.out.printf("""
                     Oops, something went wrong. Try again with different params.\s
                     Problem in: %s
-                    StackTrace:
                     """, e.getMessage());
-            e.printStackTrace();
-            return 1;
+            return 2;
         } catch (IOException e) {
             System.out.printf("""
                     Oops, something went wrong. Try again with different params.\s
                     Problem in: %s
-                    StackTrace:
                     """, e.getMessage());
-            e.printStackTrace();
             return 1;
         }
+        System.out.println(result);
         return 0;
     }
 
     public static void main(String... args) {
         int exitCode = new CommandLine(new App()).execute(args);
-        System.exit(exitCode);
+//        System.exit(exitCode);
     }
 }

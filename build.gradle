@@ -1,7 +1,9 @@
 plugins {
     id 'application'
     id 'com.adarshr.test-logger' version '3.2.0'
+    id 'se.patrikerdes.use-latest-versions' version '0.2.18'
     id 'com.github.ben-manes.versions' version '0.42.0'
+    id 'io.freefair.lombok' version '6.4.1'
     id 'checkstyle'
     id 'jacoco'
 }
@@ -24,7 +26,11 @@ application {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testImplementation(
+            'org.junit.jupiter:junit-jupiter-params:5.8.2',
+            'org.slf4j:slf4j-log4j12:2.0.0-alpha7',
+            'org.assertj:assertj-core:3.22.0'
+    )
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
     implementation 'info.picocli:picocli:4.6.3'
     annotationProcessor 'info.picocli:picocli-codegen:4.6.3'
