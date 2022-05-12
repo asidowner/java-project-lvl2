@@ -18,7 +18,7 @@ jobs:
       - name: Execute Gradle build
         run: make build
 
-      - name: Test & publish code coverage
+      - name: Publish code coverage
         uses: paambaati/codeclimate-action@v3.0.0
         env:
           # Set CC_TEST_REPORTER_ID as secret of your repo
