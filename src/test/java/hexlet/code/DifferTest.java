@@ -107,6 +107,12 @@ class DifferTest {
         assertThrowsExactly(IOException.class, () -> {
             Differ.generate(file1txt, file2txt, format);
         });
+        assertThrowsExactly(IOException.class, () -> {
+            Differ.generate(file1txt, file2json, format);
+        });
+        assertThrowsExactly(IOException.class, () -> {
+            Differ.generate(file1json, file2txt, format);
+        });
     }
 
     @Test

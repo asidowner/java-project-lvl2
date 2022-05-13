@@ -20,13 +20,8 @@ public class Differ {
     private static final int INDENT = 3;
 
     public static String generate(String pathToFirstFile, String pathToSecondFile, String format) throws IOException {
-        if (!FilenameUtils.getExtension(pathToFirstFile).equals(FilenameUtils.getExtension(pathToSecondFile))) {
-            throw new IOException("The files must have the same extensions");
-        }
-
-        if (!format.matches("stylish")) {
-            throw new IOException("Unknown format for result set");
-        }
+        checkExtensionsFile(pathToFirstFile, pathToSecondFile);
+        checkFormat(format);
 
         Map<String, Object> firstFile = getMapFromFile(pathToFirstFile);
         Map<String, Object> secondFile = getMapFromFile(pathToSecondFile);
@@ -53,6 +48,25 @@ public class Differ {
                 }).collect(Collectors.joining()), format);
     }
 
+    private static void checkFormat(String format) throws IOException {
+        if (!format.matches("stylish")) {
+            throw new IOException("Unknown format for result set");
+        }
+    }
+
+    private static void checkExtensionsFile(String pathToFirstFile, String pathToSecondFile) throws IOException {
+        String firstFileExtension = FilenameUtils.getExtension(pathToFirstFile);
+        String secondFileExtension = FilenameUtils.getExtension(pathToSecondFile);
+
+
+        if (!firstFileExtension.equals(secondFileExtension)) {
+            throw new IOException("The files must have the same extensions");
+        }
+        if (!firstFileExtension.matches("json|yml") || !secondFileExtension.matches("json|yml")) {
+            throw new IOException("Unsupported file extension");
+        }
+    }
+
 
     private static String formatLine(String diff, String key, Object value, String format) {
         return "%s%s %s: %s\n".formatted(" ".repeat(INDENT), diff, key, value);
@@ -63,15 +77,10 @@ public class Differ {
     }
 
     private static Map<String, Object> getMapFromFile(String filePath) throws IOException {
-        String fileExtension = FilenameUtils.getExtension(filePath);
-        if (fileExtension.matches("json|yml")) {
-            String file = Files.readString(Path.of(filePath));
-            ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
-            return objectMapper.readValue(file, new TypeReference<Map<String, Object>>() {
-            });
+        String file = Files.readString(Path.of(filePath));
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+        return objectMapper.readValue(file, new TypeReference<Map<String, Object>>() {
+        });
 
-        } else {
-            throw new IOException("Unsupported file extension");
-        }
     }
 }
