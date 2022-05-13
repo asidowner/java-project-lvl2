@@ -66,28 +66,14 @@ public class Differ {
 
     private static Map<String, Object> getMapFromFile(String filePath) throws IOException {
         String fileExtension = FilenameUtils.getExtension(filePath);
-        if (fileExtension.equals("json")) {
-            return getMapFromJson(filePath);
+        if (fileExtension.matches("json|yml")) {
+            String file = Files.readString(Path.of(filePath));
+            ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+            return objectMapper.readValue(file, new TypeReference<Map<String, Object>>() {
+            });
 
-        } else if (fileExtension.equals("yml")) {
-            return getMapFromYaml(filePath);
         } else {
             throw new IOException("Unsupported file extension");
         }
-    }
-
-
-    private static Map<String, Object> getMapFromJson(String filePath) throws IOException {
-        String file = Files.readString(Path.of(filePath));
-        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
-        return objectMapper.readValue(file, new TypeReference<Map<String, Object>>() {
-        });
-    }
-
-    private static Map<String, Object> getMapFromYaml(String filePath) throws IOException {
-        String file = Files.readString(Path.of(filePath));
-        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
-        return objectMapper.readValue(file, new TypeReference<Map<String, Object>>() {
-        });
     }
 }
