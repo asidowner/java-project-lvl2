@@ -3,6 +3,10 @@ package hexlet.code;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Files;
+
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.apache.commons.io.FilenameUtils;
+
 import java.util.Comparator;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,24 +18,28 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class Differ {
 
     public static String generate(String pathToFirstFile, String pathToSecondFile, String format) throws IOException {
-        Map<String, Object> firstJson = getJsonAsMap(pathToFirstFile);
-        Map<String, Object> secondJson = getJsonAsMap(pathToSecondFile);
+        if (!FilenameUtils.getExtension(pathToFirstFile).equals(FilenameUtils.getExtension(pathToSecondFile))) {
+            throw new IOException("The files must have the same extensions");
+        }
 
-        return "{\n%s}".formatted(Stream.concat(firstJson.keySet().stream(), secondJson.keySet().stream())
+        Map<String, Object> firstFile = getMapFromFile(pathToFirstFile);
+        Map<String, Object> secondFile = getMapFromFile(pathToSecondFile);
+
+        return "{\n%s}".formatted(Stream.concat(firstFile.keySet().stream(), secondFile.keySet().stream())
                 .distinct()
                 .sorted(Comparator.comparing(String::format))
                 .map(key -> {
-                    if (firstJson.containsKey(key) && secondJson.containsKey(key)) {
-                        if (firstJson.get(key).equals(secondJson.get(key))) {
-                            return formatLine(" ", key, secondJson.get(key));
+                    if (firstFile.containsKey(key) && secondFile.containsKey(key)) {
+                        if (firstFile.get(key).equals(secondFile.get(key))) {
+                            return formatLine(" ", key, secondFile.get(key));
                         } else {
-                            return formatLine("-", key, firstJson.get(key))
-                                    + formatLine("+", key, secondJson.get(key));
+                            return formatLine("-", key, firstFile.get(key))
+                                    + formatLine("+", key, secondFile.get(key));
                         }
-                    } else if (secondJson.containsKey(key)) {
-                        return formatLine("+", key, secondJson.get(key));
+                    } else if (secondFile.containsKey(key)) {
+                        return formatLine("+", key, secondFile.get(key));
                     } else {
-                        return formatLine("-", key, firstJson.get(key));
+                        return formatLine("-", key, firstFile.get(key));
                     }
                 }).collect(Collectors.joining()));
     }
@@ -44,9 +52,29 @@ public class Differ {
         return key + ": " + value;
     }
 
-    private static Map<String, Object> getJsonAsMap(String filePath) throws IOException {
+    private static Map<String, Object> getMapFromFile(String filePath) throws IOException {
+        String fileExtension = FilenameUtils.getExtension(filePath);
+        if (fileExtension.equals("json")) {
+            return getMapFromJson(filePath);
+
+        } else if (fileExtension.equals("yml")) {
+            return getMapFromYaml(filePath);
+        } else {
+            throw new IOException("Unsupported file extension");
+        }
+    }
+
+
+    private static Map<String, Object> getMapFromJson(String filePath) throws IOException {
         String file = Files.readString(Path.of(filePath));
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
+        return objectMapper.readValue(file, new TypeReference<Map<String, Object>>() {
+        });
+    }
+
+    private static Map<String, Object> getMapFromYaml(String filePath) throws IOException {
+        String file = Files.readString(Path.of(filePath));
+        ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
         return objectMapper.readValue(file, new TypeReference<Map<String, Object>>() {
         });
     }

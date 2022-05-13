@@ -14,25 +14,23 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 class AppTest {
-    private String file1;
-    private String file2;
+    private String file1json;
+    private String file2json;
     private String wrongPath;
-    private String fileWithEmptyObject;
     private final PrintStream standardOut = System.out;
 
     private final ByteArrayOutputStream output = new ByteArrayOutputStream();
 
     @BeforeEach
     void setUp() {
-        file1 = "src/test/resources/json1.json";
-        file2 = "src/test/resources/json2.json";
-        wrongPath = "sqwezsxf/qweasf";
-        fileWithEmptyObject = "src/test/resources/jsonEmptyObject.json";
+        file1json = "src/test/resources/file1.json";
+        file2json = "src/test/resources/file2.json";
+        wrongPath = "sqwezsxf/qweasf.json";
         System.setOut(new PrintStream(output));
     }
 
     @Test
-    void main() {
+    void mainJson() {
         String expected = """
                 {
                    - follow: false
@@ -43,32 +41,15 @@ class AppTest {
                    + verbose: true
                 }""";
 
-        App.main(file1, file2);
+        App.main(file1json, file2json);
         assertEquals(expected, output.toString(StandardCharsets.UTF_8).trim());
     }
 
     @Test
-    void mainWithWrongFile1() {
+    void mainWithWrongJsonFile1() {
         String expected = "Oops, something went wrong. Try again with different params. \n"
                 + "Problem in: %s".formatted(wrongPath);
-        App.main(wrongPath, file2);
-        assertEquals(expected, output.toString(StandardCharsets.UTF_8).trim());
-    }
-
-    @Test
-    void mainWithWrongFile2() {
-        String expected = "Oops, something went wrong. Try again with different params. \n"
-                + "Problem in: %s".formatted(wrongPath);
-        App.main(file1, wrongPath);
-        assertEquals(expected, output.toString(StandardCharsets.UTF_8).trim());
-    }
-
-    @Test
-    void mainWithEmptyFile() {
-        String expected = "Oops, something went wrong. Try again with different params. \n"
-                + "Problem in: No content to map due to end-of-input\n"
-                + " at [Source: (String)\"\"; line: 1, column: 0]";
-        App.main(file1, fileWithEmptyObject);
+        App.main(wrongPath, file2json);
         assertEquals(expected, output.toString(StandardCharsets.UTF_8).trim());
     }
 

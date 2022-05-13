@@ -1,12 +1,10 @@
 package hexlet.code;
 
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Command;
 
-import java.io.IOException;
 import java.util.concurrent.Callable;
 
 @Command(name = "gendiff", mixinStandardHelpOptions = true, version = "app 1.0",
@@ -31,13 +29,7 @@ public class App implements Callable<Integer> {
         String result;
         try {
             result = Differ.generate(filepath1, filepath2, format);
-        } catch (MismatchedInputException e) {
-            System.out.printf("""
-                    Oops, something went wrong. Try again with different params.\s
-                    Problem in: %s
-                    """, e.getMessage());
-            return 2;
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.printf("""
                     Oops, something went wrong. Try again with different params.\s
                     Problem in: %s
