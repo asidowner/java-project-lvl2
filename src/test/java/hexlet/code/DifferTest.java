@@ -42,12 +42,29 @@ class DifferTest {
     void testGenerate() throws IOException {
         String expected = """
                 {
-                   - follow: false
-                     host: hexlet.io
-                   - proxy: 123.234.53.22
-                   - timeout: 50
-                   + timeout: 20
-                   + verbose: true
+                     chars1: [a, b, c]
+                   - chars2: [d, e, f]
+                   + chars2: false
+                   - checked: false
+                   + checked: true
+                   - default: null
+                   + default: [value1, value2]
+                   - id: 45
+                   + id: null
+                   - key1: value1
+                   + key2: value2
+                     numbers1: [1, 2, 3, 4]
+                   - numbers2: [2, 3, 4, 5]
+                   + numbers2: [22, 33, 44, 55]
+                   - numbers3: [3, 4, 5]
+                   + numbers4: [4, 5, 6]
+                   + obj1: {nestedKey=value, isNested=true}
+                   - setting1: Some value
+                   + setting1: Another value
+                   - setting2: 200
+                   + setting2: 300
+                   - setting3: true
+                   + setting3: none
                 }""";
         assertEquals(Differ.generate(file1json, file2json, format), expected);
         assertEquals(Differ.generate(file1FullPath, file2json, format), expected);
@@ -93,6 +110,13 @@ class DifferTest {
     }
 
     @Test
+    void testGenerateWithUnknownFormat() {
+        assertThrowsExactly(IOException.class, () -> {
+            Differ.generate(file1json, file2json, "someFormat");
+        });
+    }
+
+    @Test
     void testGenerateWithDifferentExtension() {
         assertThrowsExactly(IOException.class, () -> {
             Differ.generate(file1json, file2yaml, format);
@@ -103,10 +127,18 @@ class DifferTest {
     void testGenerateSameFiles() throws IOException {
         String expected = """
                 {
-                     follow: false
-                     host: hexlet.io
-                     proxy: 123.234.53.22
-                     timeout: 50
+                     chars1: [a, b, c]
+                     chars2: [d, e, f]
+                     checked: false
+                     default: null
+                     id: 45
+                     key1: value1
+                     numbers1: [1, 2, 3, 4]
+                     numbers2: [2, 3, 4, 5]
+                     numbers3: [3, 4, 5]
+                     setting1: Some value
+                     setting2: 200
+                     setting3: true
                 }""";
         assertEquals(Differ.generate(file1json, file1json, format), expected);
     }
