@@ -7,7 +7,9 @@ import java.nio.file.Files;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.commons.io.FilenameUtils;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -15,6 +17,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Differ {
+    private static final int INDENT = 3;
 
     public static String generate(String pathToFirstFile, String pathToSecondFile, String format) throws IOException {
         if (!FilenameUtils.getExtension(pathToFirstFile).equals(FilenameUtils.getExtension(pathToSecondFile))) {
@@ -54,15 +57,11 @@ public class Differ {
 
 
     private static String formatLine(String diff, String key, Object value, String format) {
-        return "   " + diff + " " + formatKeyValue(key, value) + "\n";
+        return "%s%s %s: %s\n".formatted(" ".repeat(INDENT), diff, key, value);
     }
 
     private static String formatParagraph(String paragraph, String format) {
         return "{\n%s}".formatted(paragraph);
-    }
-
-    private static String formatKeyValue(String key, Object value) {
-        return key + ": " + value;
     }
 
     private static Map<String, Object> getMapFromFile(String filePath) throws IOException {

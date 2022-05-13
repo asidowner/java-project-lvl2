@@ -40,7 +40,7 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.2.2'
 
-    implementation 'commons-io:commons-io:2.6'
+    implementation 'commons-io:commons-io:2.7'
 }
 
 
