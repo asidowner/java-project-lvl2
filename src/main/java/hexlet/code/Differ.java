@@ -24,7 +24,9 @@ public class Differ {
             throw new IOException("The files must have the same extensions");
         }
 
-        if (!format.matches("stylish")) throw new IOException("Unknown format for result set");
+        if (!format.matches("stylish")) {
+            throw new IOException("Unknown format for result set");
+        }
 
         Map<String, Object> firstFile = getMapFromFile(pathToFirstFile);
         Map<String, Object> secondFile = getMapFromFile(pathToSecondFile);
