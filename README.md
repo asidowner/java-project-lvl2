@@ -11,4 +11,4 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/0e38357c474e79f7d7bf/test_coverage)](https://codeclimate.com/github/asidowner/java-project-lvl2/test_coverage)
 
 ### Example:
-[![asciicast](https://asciinema.org/a/WfJmhpbTUBuiVsnrosGmwA058.svg)](https://asciinema.org/a/WfJmhpbTUBuiVsnrosGmwA058)
+[![asciicast](https://asciinema.org/a/Nb1LuiymjsBgBW6ThPS4mbfqV.svg)](https://asciinema.org/a/Nb1LuiymjsBgBW6ThPS4mbfqV)
