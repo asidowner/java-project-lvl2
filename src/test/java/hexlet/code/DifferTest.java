@@ -1,10 +1,8 @@
 package hexlet.code;
 
 import java.io.IOException;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 
-import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,14 +13,12 @@ class DifferTest {
     private String file1json;
     private String file2json;
     private String file1FullPath;
-    private String emptyFile;
-    private String fileWithEmptyObject;
-    private String wrongPath;
     private String file1yaml;
     private String file2yaml;
     private String file1txt;
     private String file2txt;
-    private String format = "stylish";
+    private String formatStylish = "stylish";
+    private String formatPlain = "plain";
 
     @BeforeEach
     void setUp() {
@@ -32,14 +28,11 @@ class DifferTest {
         file2yaml = "src/test/resources/file2.yml";
         file1txt = "src/test/resources/file1.txt";
         file2txt = "src/test/resources/file2.txt";
-        emptyFile = "src/test/resources/emptyFile.json";
-        fileWithEmptyObject = "src/test/resources/jsonEmptyObject.json";
         file1FullPath = Path.of(file1json).toAbsolutePath().toString();
-        wrongPath = "12/asda/123assf/qwe.json";
     }
 
     @Test
-    void testGenerate() throws IOException {
+    void testGenerateStylish() throws IOException {
         String expected = """
                 {
                      chars1: [a, b, c]
@@ -66,87 +59,47 @@ class DifferTest {
                    - setting3: true
                    + setting3: none
                 }""";
-        assertEquals(Differ.generate(file1json, file2json, format), expected);
-        assertEquals(Differ.generate(file1FullPath, file2json, format), expected);
-        assertEquals(Differ.generate(file1yaml, file2yaml, format), expected);
-        assertEquals(Differ.generate(file1yaml, file2yaml, format), expected);
+        assertEquals(Differ.generate(file1json, file2json, formatStylish), expected);
+        assertEquals(Differ.generate(file1FullPath, file2json, formatStylish), expected);
+        assertEquals(Differ.generate(file1yaml, file2yaml, formatStylish), expected);
     }
 
     @Test
-    void testGenerateWithEmptyFile() {
-        assertThrowsExactly(MismatchedInputException.class, () -> {
-            Differ.generate(emptyFile, file2json, format);
-        });
-        assertThrowsExactly(MismatchedInputException.class, () -> {
-            Differ.generate(file1json, emptyFile, format);
-        });
-    }
-
-    @Test
-    void testGenerateWithEmptyObject() {
-        assertThrowsExactly(NoSuchFileException.class, () -> {
-            Differ.generate(fileWithEmptyObject, file2json, format);
-        });
-        assertThrowsExactly(NoSuchFileException.class, () -> {
-            Differ.generate(file1json, fileWithEmptyObject, format);
-        });
-    }
-
-    @Test
-    void testGenerateWrongPath() {
-        assertThrowsExactly(NoSuchFileException.class, () -> {
-            Differ.generate(wrongPath, file2json, format);
-        });
-        assertThrowsExactly(NoSuchFileException.class, () -> {
-            Differ.generate(file1json, wrongPath, format);
-        });
+    void testGeneratePlain() throws IOException {
+        String expected = "\nProperty 'chars2' was updated. From [complex value] to false"
+                + "\nProperty 'checked' was updated. From false to true"
+                + "\nProperty 'default' was updated. From null to [complex value]"
+                + "\nProperty 'id' was updated. From 45 to null"
+                + "\nProperty 'key1' was removed"
+                + "\nProperty 'key2' was added with value: 'value2'"
+                + "\nProperty 'numbers2' was updated. From [complex value] to [complex value]"
+                + "\nProperty 'numbers3' was removed"
+                + "\nProperty 'numbers4' was added with value: [complex value]"
+                + "\nProperty 'obj1' was added with value: [complex value]"
+                + "\nProperty 'setting1' was updated. From 'Some value' to 'Another value'"
+                + "\nProperty 'setting2' was updated. From 200 to 300"
+                + "\nProperty 'setting3' was updated. From true to 'none'\n";
+        assertEquals(expected, Differ.generate(file1yaml, file2yaml, formatPlain));
     }
 
     @Test
     void testGenerateWithUnknownExtension() {
         assertThrowsExactly(IOException.class, () -> {
-            Differ.generate(file1txt, file2txt, format);
+            Differ.generate(file1txt, file2txt, formatStylish);
         });
         assertThrowsExactly(IOException.class, () -> {
-            Differ.generate(file1txt, file2json, format);
+            Differ.generate(file1txt, file2json, formatStylish);
         });
         assertThrowsExactly(IOException.class, () -> {
-            Differ.generate(file1json, file2txt, format);
-        });
-    }
-
-    @Test
-    void testGenerateWithUnknownFormat() {
-        assertThrowsExactly(IOException.class, () -> {
-            Differ.generate(file1json, file2json, "someFormat");
+            Differ.generate(file1json, file2txt, formatStylish);
         });
     }
 
     @Test
     void testGenerateWithDifferentExtension() {
         assertThrowsExactly(IOException.class, () -> {
-            Differ.generate(file1json, file2yaml, format);
+            Differ.generate(file1json, file2yaml, formatStylish);
         });
-    }
-
-    @Test
-    void testGenerateSameFiles() throws IOException {
-        String expected = """
-                {
-                     chars1: [a, b, c]
-                     chars2: [d, e, f]
-                     checked: false
-                     default: null
-                     id: 45
-                     key1: value1
-                     numbers1: [1, 2, 3, 4]
-                     numbers2: [2, 3, 4, 5]
-                     numbers3: [3, 4, 5]
-                     setting1: Some value
-                     setting2: 200
-                     setting3: true
-                }""";
-        assertEquals(Differ.generate(file1json, file1json, format), expected);
     }
 
     @Test

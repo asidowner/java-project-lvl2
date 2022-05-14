@@ -10,48 +10,42 @@ import org.apache.commons.io.FilenameUtils;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Differ {
-    private static final int INDENT = 3;
 
     public static String generate(String pathToFirstFile, String pathToSecondFile, String format) throws IOException {
         checkExtensionsFile(pathToFirstFile, pathToSecondFile);
-        checkFormat(format);
 
         Map<String, Object> firstFile = getMapFromFile(pathToFirstFile);
         Map<String, Object> secondFile = getMapFromFile(pathToSecondFile);
 
-        return formatParagraph(Stream.concat(firstFile.keySet().stream(), secondFile.keySet().stream())
+        Formatter formatter = new Formatter(format);
+
+        Stream.concat(firstFile.keySet().stream(), secondFile.keySet().stream())
                 .distinct()
                 .sorted(Comparator.comparing(String::format))
-                .map(key -> {
+                .forEach(key -> {
                     Object value1 = Optional.ofNullable(firstFile.get(key)).orElse("null");
                     Object value2 = Optional.ofNullable(secondFile.get(key)).orElse("null");
 
                     if (firstFile.containsKey(key) && secondFile.containsKey(key)) {
                         if (value1.equals(value2)) {
-                            return formatLine(" ", key, value2, format);
+                            formatter.setUnchangedLine(key, value1);
                         } else {
-                            return formatLine("-", key, value1, format)
-                                    + formatLine("+", key, value2, format);
+                            formatter.setChangedLine(key, value1, value2);
                         }
                     } else if (secondFile.containsKey(key)) {
-                        return formatLine("+", key, value2, format);
+                        formatter.setAddedLine(key, value2);
                     } else {
-                        return formatLine("-", key, value1, format);
+                        formatter.setRemovedLine(key, value1);
                     }
-                }).collect(Collectors.joining()), format);
-    }
+                });
 
-    private static void checkFormat(String format) throws IOException {
-        if (!format.matches("stylish")) {
-            throw new IOException("Unknown format for result set");
-        }
+        return formatter.getParagraph();
     }
 
     private static void checkExtensionsFile(String pathToFirstFile, String pathToSecondFile) throws IOException {
@@ -65,15 +59,6 @@ public class Differ {
         if (!firstFileExtension.matches("json|yml") || !secondFileExtension.matches("json|yml")) {
             throw new IOException("Unsupported file extension");
         }
-    }
-
-
-    private static String formatLine(String diff, String key, Object value, String format) {
-        return "%s%s %s: %s\n".formatted(" ".repeat(INDENT), diff, key, value);
-    }
-
-    private static String formatParagraph(String paragraph, String format) {
-        return "{\n%s}".formatted(paragraph);
     }
 
     private static Map<String, Object> getMapFromFile(String filePath) throws IOException {

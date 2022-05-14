@@ -18,7 +18,7 @@ public class App implements Callable<Integer> {
 
     @Option(names = {"-f", "--format"}, arity = "0..1", defaultValue = "stylish",
             description = "Output format [default: stylish]")
-    private String format = "stylish";
+    private String format;
 
     /**
      * Метод вызывает метод сравнения файлов generate в классе Differ.
@@ -41,7 +41,6 @@ public class App implements Callable<Integer> {
     }
 
     public static void main(String... args) {
-        int exitCode = new CommandLine(new App()).execute(args);
-//        System.exit(exitCode);
+        new CommandLine(new App()).execute(args);
     }
 }
