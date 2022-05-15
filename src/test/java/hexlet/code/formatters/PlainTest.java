@@ -22,7 +22,7 @@ class PlainTest {
 
     @Test
     void testFormatText() {
-        String expected = "\nProperty 'key' was added with value: 1\n"
+        String expected = "Property 'key' was added with value: 1\n"
                           + "Property 'key1' was removed\n"
                           + "Property 'key3' was updated. From [complex value] to 'value'";
 

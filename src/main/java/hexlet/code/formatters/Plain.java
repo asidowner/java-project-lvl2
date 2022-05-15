@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public final class Plain implements FormatterDriver {
-    private final String patternAdded = "\nProperty '%s' was added with value: %s";
-    private final String patternRemoved = "\nProperty '%s' was removed";
-    private final String patternChanged = "\nProperty '%s' was updated. From %s to %s";
+    private final String patternAdded = "Property '%s' was added with value: %s";
+    private final String patternRemoved = "Property '%s' was removed";
+    private final String patternChanged = "Property '%s' was updated. From %s to %s";
     private final String patternUnchanged = "";
 
     private String formatValue(Object value) {
@@ -22,7 +22,7 @@ public final class Plain implements FormatterDriver {
 
     @Override
     public String formatText(List<Map<String, Object>> list) {
-        return list.stream()
+        return "%s".formatted(list.stream()
                 .map(line -> {
                     Object status = line.get("status");
                     Object field = line.get("field");
@@ -39,7 +39,9 @@ public final class Plain implements FormatterDriver {
                     } else {
                         throw new RuntimeException("Unknown status for diff");
                     }
-                }).collect(Collectors.joining());
+                })
+                .filter(x -> !x.equals(""))
+                .collect(Collectors.joining("\n")));
     }
 }
 

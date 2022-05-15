@@ -67,7 +67,7 @@ class DifferTest {
 
     @Test
     void testGeneratePlain() throws IOException {
-        String expected = "\nProperty 'chars2' was updated. From [complex value] to false"
+        String expected = "Property 'chars2' was updated. From [complex value] to false"
                           + "\nProperty 'checked' was updated. From false to true"
                           + "\nProperty 'default' was updated. From null to [complex value]"
                           + "\nProperty 'id' was updated. From 45 to null"
