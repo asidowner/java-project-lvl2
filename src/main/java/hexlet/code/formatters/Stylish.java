@@ -6,17 +6,17 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public final class Stylish implements FormatterDriver {
-    private final String patternAdded = "  + %s: %s\n";
-    private final String patternRemoved = "  - %s: %s\n";
-    private final String patternChanged = "  - %s: %s\n  + %s: %s\n";
-    private final String patternUnchanged = "    %s: %s\n";
+    private final String patternAdded = "  + %s: %s";
+    private final String patternRemoved = "  - %s: %s";
+    private final String patternChanged = "  - %s: %s\n  + %s: %s";
+    private final String patternUnchanged = "    %s: %s";
 
     private String formatValue(Object value) {
         return value.toString();
     }
     @Override
     public String formatText(List<Map<String, Object>> list) {
-        return "{\n%s}".formatted(list.stream()
+        return list.stream()
                 .map(line -> {
                     Object status = line.get("status");
                     Object field = line.get("field");
@@ -33,6 +33,6 @@ public final class Stylish implements FormatterDriver {
                     } else {
                         throw new RuntimeException("Unknown status for diff");
                     }
-                }).collect(Collectors.joining()));
+                }).collect(Collectors.joining("\n", "{\n", "\n}"));
     }
 }

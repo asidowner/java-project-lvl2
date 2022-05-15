@@ -22,7 +22,7 @@ public final class Plain implements FormatterDriver {
 
     @Override
     public String formatText(List<Map<String, Object>> list) {
-        return "%s".formatted(list.stream()
+        return list.stream()
                 .map(line -> {
                     Object status = line.get("status");
                     Object field = line.get("field");
@@ -41,7 +41,7 @@ public final class Plain implements FormatterDriver {
                     }
                 })
                 .filter(x -> !x.equals(""))
-                .collect(Collectors.joining("\n")));
+                .collect(Collectors.joining("\n"));
     }
 }
 
