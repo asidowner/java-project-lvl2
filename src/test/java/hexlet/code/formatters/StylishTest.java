@@ -32,4 +32,14 @@ class StylishTest {
 
         assertEquals(expected, new Stylish().formatText(list));
     }
+
+    @Test
+    void testBadDiffStatus() {
+        try {
+            list = List.of(Map.of("status", "added1", "field", "key", "newValue", 1));
+            new Stylish().formatText(list);
+        } catch (Exception e) {
+            assertEquals(RuntimeException.class, e.getClass());
+        }
+    }
 }

@@ -8,7 +8,6 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.commons.io.FilenameUtils;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,49 +24,33 @@ public class Differ {
         Map<String, Object> firstFile = getMapFromFile(pathToFirstFile);
         Map<String, Object> secondFile = getMapFromFile(pathToSecondFile);
 
-
-        List<Map<String, Object>> list;
-
-        list = Stream.concat(firstFile.keySet().stream(), secondFile.keySet().stream())
+        List<Map<String, Object>> list = Stream.concat(firstFile.keySet().stream(), secondFile.keySet().stream())
                 .distinct()
                 .sorted(Comparator.comparing(String::format))
                 .map(key -> {
                     Object value1 = Optional.ofNullable(firstFile.get(key)).orElse("null");
                     Object value2 = Optional.ofNullable(secondFile.get(key)).orElse("null");
-                    Map<String, Object> map = new HashMap<>();
 
                     if (firstFile.containsKey(key) && secondFile.containsKey(key)) {
                         if (value1.equals(value2)) {
-                            map.put("status", "unchanged");
-                            map.put("field", key);
-                            map.put("value", value1);
+                            return Map.of("field", key, "status", "unchanged", "value", value1);
                         } else {
-                            map.put("status", "changed");
-                            map.put("field", key);
-                            map.put("oldValue", value1);
-                            map.put("newValue", value2);
+                            return Map.of("field", key, "status", "changed", "oldValue", value1,
+                                    "newValue", value2);
                         }
                     } else if (secondFile.containsKey(key)) {
-                        map.put("status", "added");
-                        map.put("field", key);
-                        map.put("newValue", value2);
+                        return Map.of("field", key, "status", "added", "newValue", value2);
                     } else {
-                        map.put("status", "removed");
-                        map.put("field", key);
-                        map.put("oldValue", value1);
+                        return Map.of("field", key, "status", "removed", "oldValue", value1);
                     }
-                    return map;
                 }).toList();
 
-        Formatter formatter = new Formatter(format);
-
-        return formatter.formatText(list);
+        return Formatter.formatText(list, format);
     }
 
     private static void checkExtensionsFile(String pathToFirstFile, String pathToSecondFile) throws IOException {
         String firstFileExtension = FilenameUtils.getExtension(pathToFirstFile);
         String secondFileExtension = FilenameUtils.getExtension(pathToSecondFile);
-
 
         if (!firstFileExtension.equals(secondFileExtension)) {
             throw new IOException("The files must have the same extensions");
@@ -82,6 +65,5 @@ public class Differ {
         ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory());
         return objectMapper.readValue(file, new TypeReference<Map<String, Object>>() {
         });
-
     }
 }
