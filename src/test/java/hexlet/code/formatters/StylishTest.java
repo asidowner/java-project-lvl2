@@ -23,11 +23,11 @@ class StylishTest {
     @Test
     void testFormatText() {
         String expected = "{\n"
-                + "   + key: 1\n"
-                + "   - key1: value\n"
-                + "     key2: value\n"
-                + "   - key3: [a, b]\n"
-                + "   + key3: value\n"
+                + "  + key: 1\n"
+                + "  - key1: value\n"
+                + "    key2: value\n"
+                + "  - key3: [a, b]\n"
+                + "  + key3: value\n"
                 + "}";
 
         assertEquals(expected, new Stylish().formatText(list));
