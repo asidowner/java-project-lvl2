@@ -1,6 +1,15 @@
 package hexlet.code.formatters;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public final class Plain implements FormatterDriver {
+    private final String patternAdded = "Property '%s' was added with value: %s\n";
+    private final String patternRemoved = "Property '%s' was removed\n";
+    private final String patternChanged = "Property '%s' was updated. From %s to %s\n";
+    private final String patternUnchanged = "";
+
     private String formatValue(Object value) {
         if (value.equals("null") || value.getClass().equals(Integer.class) || value.getClass().equals(Boolean.class)) {
             return value.toString();
@@ -12,28 +21,25 @@ public final class Plain implements FormatterDriver {
     }
 
     @Override
-    public String returnAddedLine(String key, Object value) {
-        return "Property '%s' was added with value: %s\n".formatted(key, formatValue(value));
-    }
+    public String formatText(List<Map<String, Object>> list) {
+        return "\n%s".formatted(list.stream()
+                .map(line -> {
+                    Object status = line.get("status");
+                    Object field = line.get("field");
 
-    @Override
-    public String returnRemovedLine(String key, Object value) {
-        return "Property '%s' was removed\n".formatted(key);
-    }
-
-    @Override
-    public String returnUnchangedLine(String key, Object value) {
-        return "";
-    }
-
-    @Override
-    public String returnChangedLine(String key, Object value1, Object value2) {
-        return "Property '%s' was updated. From %s to %s\n".formatted(key, formatValue(value1), formatValue(value2));
-    }
-
-    @Override
-    public String returnParagraph(String text) {
-        return "\n%s".formatted(text);
+                    if (status.equals("added")) {
+                        return patternAdded.formatted(field, formatValue(line.get("newValue")));
+                    } else if (status.equals("removed")) {
+                        return patternRemoved.formatted(field);
+                    } else if (status.equals("changed")) {
+                        return patternChanged.formatted(field, formatValue(line.get("oldValue")),
+                                formatValue(line.get("newValue")));
+                    } else if (status.equals("unchanged")) {
+                        return patternUnchanged;
+                    } else {
+                        throw new RuntimeException("Unknown status for diff");
+                    }
+                }).collect(Collectors.joining()));
     }
 }
 

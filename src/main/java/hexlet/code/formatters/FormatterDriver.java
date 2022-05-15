@@ -1,11 +1,8 @@
 package hexlet.code.formatters;
 
+import java.util.List;
+import java.util.Map;
+
 public interface FormatterDriver {
-    String returnAddedLine(String key, Object value);
-
-    String returnRemovedLine(String key, Object value);
-    String returnUnchangedLine(String key, Object value);
-    String returnChangedLine(String key, Object value1, Object value2);
-
-    String returnParagraph(String text);
+    String formatText(List<Map<String, Object>> list);
 }

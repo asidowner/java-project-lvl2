@@ -8,6 +8,8 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.apache.commons.io.FilenameUtils;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -23,29 +25,43 @@ public class Differ {
         Map<String, Object> firstFile = getMapFromFile(pathToFirstFile);
         Map<String, Object> secondFile = getMapFromFile(pathToSecondFile);
 
-        Formatter formatter = new Formatter(format);
 
-        Stream.concat(firstFile.keySet().stream(), secondFile.keySet().stream())
+        List<Map<String, Object>> list;
+
+        list = Stream.concat(firstFile.keySet().stream(), secondFile.keySet().stream())
                 .distinct()
                 .sorted(Comparator.comparing(String::format))
-                .forEach(key -> {
+                .map(key -> {
                     Object value1 = Optional.ofNullable(firstFile.get(key)).orElse("null");
                     Object value2 = Optional.ofNullable(secondFile.get(key)).orElse("null");
+                    Map<String, Object> map = new HashMap<>();
 
                     if (firstFile.containsKey(key) && secondFile.containsKey(key)) {
                         if (value1.equals(value2)) {
-                            formatter.setUnchangedLine(key, value1);
+                            map.put("status", "unchanged");
+                            map.put("field", key);
+                            map.put("value", value1);
                         } else {
-                            formatter.setChangedLine(key, value1, value2);
+                            map.put("status", "changed");
+                            map.put("field", key);
+                            map.put("oldValue", value1);
+                            map.put("newValue", value2);
                         }
                     } else if (secondFile.containsKey(key)) {
-                        formatter.setAddedLine(key, value2);
+                        map.put("status", "added");
+                        map.put("field", key);
+                        map.put("newValue", value2);
                     } else {
-                        formatter.setRemovedLine(key, value1);
+                        map.put("status", "removed");
+                        map.put("field", key);
+                        map.put("oldValue", value1);
                     }
-                });
+                    return map;
+                }).toList();
 
-        return formatter.getParagraph();
+        Formatter formatter = new Formatter(format);
+
+        return formatter.formatText(list);
     }
 
     private static void checkExtensionsFile(String pathToFirstFile, String pathToSecondFile) throws IOException {

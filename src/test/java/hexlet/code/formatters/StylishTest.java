@@ -1,42 +1,35 @@
 package hexlet.code.formatters;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StylishTest {
+    private List<Map<String, Object>> list;
 
-    @Test
-    void returnAddedLine() {
-        String expected = "   + key: value\n";
-
-        assertEquals(expected, new Stylish().returnAddedLine("key", "value"));
+    @BeforeEach
+    void setUp() {
+        List<String> str = List.of("a", "b");
+        list = List.of(Map.of("status", "added", "field", "key", "newValue", 1),
+                Map.of("status", "removed", "field", "key1", "oldValue", "value"),
+                Map.of("status", "unchanged", "field", "key2", "value", "value"),
+                Map.of("status", "changed", "field", "key3",
+                        "newValue", "value", "oldValue", str));
     }
-
     @Test
-    void returnRemovedLine() {
-        String expected = "   - key: value\n";
+    void testFormatText() {
+        String expected = "{\n"
+                + "   + key: 1\n"
+                + "   - key1: value\n"
+                + "     key2: value\n"
+                + "   - key3: [a, b]\n"
+                + "   + key3: value\n"
+                + "}";
 
-        assertEquals(expected, new Stylish().returnRemovedLine("key", "value"));
-    }
-
-    @Test
-    void returnUnchangedLine() {
-        String expected = "     key: value\n";
-
-        assertEquals(expected, new Stylish().returnUnchangedLine("key", "value"));
-    }
-
-    @Test
-    void returnChangedLine() {
-        String expected = "   - key: value1\n   + key: value2\n";
-
-        assertEquals(expected, new Stylish().returnChangedLine("key", "value1", "value2"));
-    }
-
-    @Test
-    void returnParagraph() {
-        String expected = "{\na\n}";
-        assertEquals(expected, new Stylish().returnParagraph("a\n"));
+        assertEquals(expected, new Stylish().formatText(list));
     }
 }
