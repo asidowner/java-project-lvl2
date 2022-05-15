@@ -79,7 +79,7 @@ class DifferTest {
                           + "\nProperty 'obj1' was added with value: [complex value]"
                           + "\nProperty 'setting1' was updated. From 'Some value' to 'Another value'"
                           + "\nProperty 'setting2' was updated. From 200 to 300"
-                          + "\nProperty 'setting3' was updated. From true to 'none'\n";
+                          + "\nProperty 'setting3' was updated. From true to 'none'";
         assertEquals(expected, Differ.generate(file1yaml, file2yaml, formatPlain));
     }
 
