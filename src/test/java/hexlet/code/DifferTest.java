@@ -60,7 +60,7 @@ class DifferTest {
                    - setting3: true
                    + setting3: none
                 }""";
-        assertEquals(Differ.generate(file1json, file2json, formatStylish), expected);
+        assertEquals(Differ.generate(file1json, file2json), expected);
         assertEquals(Differ.generate(file1FullPath, file2json, formatStylish), expected);
         assertEquals(Differ.generate(file1yaml, file2yaml, formatStylish), expected);
     }

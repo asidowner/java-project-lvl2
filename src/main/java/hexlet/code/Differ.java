@@ -48,6 +48,10 @@ public class Differ {
         return Formatter.formatText(list, format);
     }
 
+    public static String generate(String pathToFirstFile, String pathToSecondFile) throws IOException {
+        return generate(pathToFirstFile, pathToSecondFile, "stylish");
+    }
+
     private static void checkExtensionsFile(String pathToFirstFile, String pathToSecondFile) throws IOException {
         String firstFileExtension = FilenameUtils.getExtension(pathToFirstFile);
         String secondFileExtension = FilenameUtils.getExtension(pathToSecondFile);
