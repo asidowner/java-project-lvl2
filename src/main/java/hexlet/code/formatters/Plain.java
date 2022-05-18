@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public final class Plain implements FormatterDriver {
+public final class Plain implements StyleFormatter {
     private final String patternAdded = "Property '%s' was added with value: %s";
     private final String patternRemoved = "Property '%s' was removed";
     private final String patternChanged = "Property '%s' was updated. From %s to %s";

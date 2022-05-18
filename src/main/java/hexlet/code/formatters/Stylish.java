@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public final class Stylish implements FormatterDriver {
+public final class Stylish implements StyleFormatter {
     private final String patternAdded = "  + %s: %s";
     private final String patternRemoved = "  - %s: %s";
     private final String patternChanged = "  - %s: %s\n  + %s: %s";
