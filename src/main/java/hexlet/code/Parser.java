@@ -14,7 +14,7 @@ public class Parser {
 
         if (dataFormat.equals("json")) {
             objectMapper = new ObjectMapper(new JsonFactory());
-        } else if (dataFormat.equals("yml")) {
+        } else if (dataFormat.matches("yml|yaml")) {
             objectMapper = new ObjectMapper(new YAMLFactory());
         } else {
             throw new IOException("Unsupported dataFormat");
