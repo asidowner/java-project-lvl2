@@ -22,6 +22,7 @@ class AppTest {
     private String file2json;
     private String wrongPath;
     private static String expectedStylish;
+    private static String expectedError;
     private static final String PATH_TO_FIXTURES = "src/test/resources/fixtures/";
     private final PrintStream standardOut = System.out;
 
@@ -30,6 +31,7 @@ class AppTest {
     @BeforeAll
     static void setBefore() throws IOException {
         expectedStylish = Files.readString(Path.of(PATH_TO_FIXTURES + "expectedStylish.txt"));
+        expectedError = Files.readString(Path.of(PATH_TO_FIXTURES + "appTestExpectedError.txt"));
     }
 
     @BeforeEach
@@ -48,10 +50,8 @@ class AppTest {
 
     @Test
     void mainWithWrongJsonFile1() {
-        String expectedError = "Oops, something went wrong. Try again with different params. \n"
-                + "Problem in: %s".formatted(wrongPath);
         App.main(wrongPath, file2json);
-        assertEquals(expectedError, output.toString(StandardCharsets.UTF_8).trim());
+        assertEquals(expectedError.formatted(wrongPath), output.toString(StandardCharsets.UTF_8).trim());
     }
 
     @AfterEach

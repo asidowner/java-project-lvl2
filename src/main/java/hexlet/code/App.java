@@ -31,7 +31,7 @@ public class App implements Callable<Integer> {
             result = Differ.generate(filepath1, filepath2, format);
         } catch (Exception e) {
             System.out.printf("""
-                    Oops, something went wrong. Try again with different params.\s
+                    Oops, something went wrong. Try again with different params.
                     Problem in: %s
                     """, e.getMessage());
             return 1;
