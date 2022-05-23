@@ -5,20 +5,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
 class DifferTest {
-    private String file1json;
-    private String file2json;
-    private String file1FullPath;
-    private String file1yaml;
-    private String file2yaml;
-    private String file1txt;
-    private String file2txt;
+    private static String file1json;
+    private static String file2json;
+    private static String file1FullPath;
+    private static String file1yaml;
+    private static String file2yaml;
+    private static String file1txt;
+    private static String file2txt;
     private final String formatStylish = "stylish";
     private final String formatPlain = "plain";
     private final String formatJson = "json";
@@ -32,10 +31,6 @@ class DifferTest {
         expectedStylish = Files.readString(Path.of(PATH_TO_FIXTURES + "expectedStylish.txt"));
         expectedPlain = Files.readString(Path.of(PATH_TO_FIXTURES + "expectedPlain.txt"));
         expectedJson = Files.readString(Path.of(PATH_TO_FIXTURES + "expectedJson.txt"));
-    }
-
-    @BeforeEach
-    void setUp() {
         file1json = PATH_TO_FIXTURES + "file1.json";
         file2json = PATH_TO_FIXTURES + "file2.json";
         file1yaml = PATH_TO_FIXTURES + "file1.yml";
@@ -76,17 +71,8 @@ class DifferTest {
     }
 
     @Test
-    void testGenerateWithDifferentExtension() {
-        assertThrowsExactly(IOException.class, () -> {
-            Differ.generate(file1json, file2yaml, formatStylish);
-        });
-    }
-
-    @Test
-    void testGenerateWithAnotherExtension() {
-        assertThrowsExactly(IOException.class, () -> {
-            Differ.generate(file1json, file2yaml, formatStylish);
-        });
+    void testGenerateWithDifferentExtension() throws IOException {
+        assertEquals(expectedStylish, Differ.generate(file1json, file2yaml, formatStylish));
     }
 
     @Test

@@ -18,9 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 class AppTest {
-    private String file1json;
-    private String file2json;
-    private String wrongPath;
+    private static String file1json;
+    private static String file2json;
+    private static String wrongPath;
     private static String expectedStylish;
     private static String expectedError;
     private static final String PATH_TO_FIXTURES = "src/test/resources/fixtures/";
@@ -32,13 +32,13 @@ class AppTest {
     static void setBefore() throws IOException {
         expectedStylish = Files.readString(Path.of(PATH_TO_FIXTURES + "expectedStylish.txt"));
         expectedError = Files.readString(Path.of(PATH_TO_FIXTURES + "appTestExpectedError.txt"));
+        file1json = PATH_TO_FIXTURES + "file1.json";
+        file2json = PATH_TO_FIXTURES + "file2.json";
+        wrongPath = PATH_TO_FIXTURES + "sqwezsxf/qweasf.json";
     }
 
     @BeforeEach
     void setUp() {
-        file1json = PATH_TO_FIXTURES + "file1.json";
-        file2json = PATH_TO_FIXTURES + "file2.json";
-        wrongPath = PATH_TO_FIXTURES + "sqwezsxf/qweasf.json";
         System.setOut(new PrintStream(output));
     }
 
